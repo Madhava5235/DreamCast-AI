@@ -7,14 +7,8 @@ GROQ_API_KEY = "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"
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
 
-# Initialize chat history in session_state
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = [
-        {"role": "system", "content": "You are a helpful and creative assistant."}
-    ]
-
 # Function to query Amas AI API
-def query_amas_ai(messages):
+def query_amas_ai(user_prompt):
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
@@ -22,7 +16,10 @@ def query_amas_ai(messages):
 
     data = {
         "model": GROQ_MODEL,
-        "messages": messages
+        "messages": [
+            {"role": "system", "content": "You are a helpful and creative assistant."},
+            {"role": "user", "content": user_prompt}
+        ]
     }
 
     response = requests.post(GROQ_API_URL, headers=headers, json=data)
@@ -67,26 +64,13 @@ st.markdown(
 st.markdown('<div class="big-font">💬 Chat with Amas AI</div>', unsafe_allow_html=True)
 st.markdown("##### Powered by LLaMA 3 on Amas AI (Groq)")
 
-# Display conversation history
-for msg in st.session_state.chat_history[1:]:  # skip system message
-    if msg["role"] == "user":
-        st.markdown(f"<div class='chat-bubble user-bubble'><strong>You:</strong> {msg['content']}</div>", unsafe_allow_html=True)
-    elif msg["role"] == "assistant":
-        st.markdown(f"<div class='chat-bubble assistant-bubble'><strong>Amas AI:</strong> {msg['content']}</div>", unsafe_allow_html=True)
-
 # User input
 user_input = st.text_input("💬 Type your message:", placeholder="Ask anything...")
 
 # Send message
 if st.button("📨 Send") and user_input.strip():
-    # Append user's message
-    st.session_state.chat_history.append({"role": "user", "content": user_input})
-
     with st.spinner("Amas AI is thinking..."):
-        response = query_amas_ai(st.session_state.chat_history)
+        response = query_amas_ai(user_input)
 
-    # Append assistant's reply
-    st.session_state.chat_history.append({"role": "assistant", "content": response})
-
-    # Rerun to update display
-    st.experimental_rerun()
+    st.markdown(f"<div class='chat-bubble user-bubble'><strong>You:</strong> {user_input}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='chat-bubble assistant-bubble'><strong>Amas AI:</strong> {response}</div>", unsafe_allow_html=True)
