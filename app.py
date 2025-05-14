@@ -1,10 +1,9 @@
-%%writefile app.py
 import streamlit as st
 import requests
 import json
 
 # Groq API Configuration
-GROQ_API_KEY = "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"
+GROQ_API_KEY = "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"
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 # Function to query Groq API with user prompt
