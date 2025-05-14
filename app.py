@@ -14,7 +14,7 @@ def query_groq(user_prompt):
     }
 
     data = {
-        "model": "llama-3-3-70b-8192",  # Use the appropriate Groq model
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",  # Use the appropriate Groq model
         "messages": [
             {"role": "system", "content": "You are a helpful and creative assistant."},
             {"role": "user", "content": user_prompt}
